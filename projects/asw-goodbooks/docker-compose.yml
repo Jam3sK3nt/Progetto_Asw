@@ -1,0 +1,106 @@
+version: '3.8'
+services:
+  connessioni:
+    container_name: connessioni
+    image: connessioni
+    build:
+      dockerfile: connessioni.df
+      context: ./connessioni
+    depends_on:
+      - "connessionidb"
+      - "consul"
+      - "zookeeper"
+      - "kafka"
+  connessionidb:
+    image: postgres:latest
+    container_name: connessionidb
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: connessioni
+    volumes:
+      - connessioni-data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+  recensioni:
+    container_name: recensioni
+    image: recensioni
+    build:
+      dockerfile: recensioni.df
+      context: ./recensioni
+    depends_on:
+      - "recensionidb"
+      - "consul"
+      - "zookeeper"
+      - "kafka"
+  recensionidb:
+    image: postgres:latest
+    container_name: recensionidb
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: recensioni
+    volumes:
+      - recensioni-data:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
+  recensioni-seguite:
+    container_name: recensioni-seguite
+    image: recensioni-seguite
+    build:
+      dockerfile: recensioni-seguite.df
+      context: ./recensioni-seguite
+    depends_on:
+      - "recensioni"
+      - "recensioni-seguitedb"
+      - "consul"
+      - "zookeeper"
+      - "kafka"
+  recensioni-seguitedb:
+    image: postgres:latest
+    container_name: recensioni-seguitedb
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: recensioni-seguite
+    volumes:
+      - recensioni-seguite-data:/var/lib/postgresql/data
+    ports:
+      - "5435:5432"
+  apigateway:
+    container_name: apigateway
+    image: apigateway
+    build:
+      dockerfile: api-gateway.df
+      context: ./api-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - "consul"
+  zookeeper:
+    image: wurstmeister/zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+  kafka:
+    image: wurstmeister/kafka:latest
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: kafka
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_CREATE_TOPICS: "recensioni-service-event-channel:4:1,connessioni-service-event-channel:4:1"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+  consul:
+    image: hashicorp/consul
+    container_name: consul
+    ports:
+      - "8500:8500"
+volumes:
+  connessioni-data:
+  recensioni-data:
+  recensioni-seguite-data:

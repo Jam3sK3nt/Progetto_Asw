@@ -1,0 +1,44 @@
+package asw.goodbooks.recensioniseguite.domain;
+
+import asw.goodbooks.common.api.event.DomainEvent;  
+import asw.goodbooks.connessioniservice.api.event.*;
+import asw.goodbooks.recensioniservice.api.event.*;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.logging.*;
+
+@Service
+public class DomainEventConsumer {
+
+	private final Logger logger = Logger.getLogger(DomainEventConsumer.class.toString());
+	
+	@Autowired
+	private RecensioniSeguiteService recensioniSeguiteService;
+
+	public void onEvent(DomainEvent event) {
+        if (event.getClass().equals(ConnessioneCreatedEvent.class)) {
+			ConnessioneCreatedEvent cce = (ConnessioneCreatedEvent) event;
+			connessioneCreated(cce); 
+		}else if (event.getClass().equals(RecensioneCreatedEvent.class)) {
+			RecensioneCreatedEvent cce = (RecensioneCreatedEvent) event;
+			recensioneCreated(cce); 
+		}else {
+			logger.info("UNKNOWN EVENT: " + event);			
+		}
+	}
+	
+    private void connessioneCreated(ConnessioneCreatedEvent event) {
+		Connessione connessione = new Connessione(event.getId(), event.getUtente(), event.getAutore());
+		recensioniSeguiteService.createConnessione(event.getId(),event.getUtente(), event.getAutore());
+		logger.info("CREATED  CONNESSIONE: " + connessione);
+	}
+	
+    private void recensioneCreated(RecensioneCreatedEvent event) {
+		Recensione recensione = new Recensione(event.getId(), event.getTitoloLibro(), event.getAutoreLibro());
+		recensioniSeguiteService.createRecensione(event.getId(),event.getTitoloLibro(), event.getAutoreLibro());
+		logger.info("CREATED  RECENSIONE: " + recensione);
+	}
+
+}

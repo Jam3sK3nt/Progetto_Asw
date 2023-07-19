@@ -62,7 +62,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         # node.vm.network "forwarded_port", guest: 8082, host: 8082, auto_correct: true
         # node.vm.network "forwarded_port", guest: 8083, host: 8083, auto_correct: true
         # node.vm.network "forwarded_port", guest: 9092, host: 9092, id: 'kafka'
-        # node.vm.network "forwarded_port", guest: 5432, host: 5432, id: 'postgres'
+        #node.vm.network "forwarded_port", guest: 5433, host: 5433, id: 'postgres'
 
 		# node.vm.network "forwarded_port", guest: 9090, host: 9090, id: 'prometheus'
         # node.vm.network "forwarded_port", guest: 3000, host: 3000, id: 'grafana'
@@ -77,7 +77,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 		# installa docker e docker compose 
         node.vm.provision :shell, :inline => ASW_RESOURCES + "docker/prepare-docker.sh"
         node.vm.provision :shell, :inline => ASW_RESOURCES + "docker/setup-docker.sh"
-        # node.vm.provision :shell, :inline => ASW_RESOURCES + "docker/setup-docker-compose.sh"
+        node.vm.provision :shell, :inline => ASW_RESOURCES + "docker/setup-docker-compose.sh"
 		
 		node.vm.provision :shell, :inline => ASW_RESOURCES + "workstation/configure-workstation-hosts.sh"
 

@@ -1,0 +1,9 @@
+# Utilizza l'immagine JDK 17 di Eclipse Temurin come base
+FROM eclipse-temurin:17-jdk
+
+# Copia il file JAR dell'applicazione nella directory /app
+ADD build/libs/api-gateway.jar api-gateway.jar
+
+
+# Esegui l'applicazione Java
+ENTRYPOINT ["java", "-Xmx128m", "-Xms64m", "-jar", "api-gateway.jar"]

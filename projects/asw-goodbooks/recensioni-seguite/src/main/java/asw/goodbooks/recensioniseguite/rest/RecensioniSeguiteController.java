@@ -29,14 +29,23 @@ public class RecensioniSeguiteController {
 	private RecensioniSeguiteService recensioniSeguiteService;
 
 	/* Trova le recensioni (in formato breve) degli utenti seguiti da utente. */ 
+	//@GetMapping("/recensioniseguite/{utente}")
+	// public Collection<Recensione> getRecensioniSeguite(@PathVariable String utente) {
+	// 	Instant start = Instant.now();
+	// 	logger.info("REST CALL: getRecensioniSeguite " + utente); 
+	// 	Collection<Recensione> recensioni = recensioniSeguiteService.getRecensioniSeguite(utente); 
+	// 	Duration duration = Duration.between(start, Instant.now()); 
+	// 	logger.info("getRecensioniSeguite " + utente + " (trovate " + recensioni.size() + " recensioni in " + duration.toMillis() + " ms): " + recensioni);
+	// 	return recensioni; 
+	// }
 	@GetMapping("/recensioniseguite/{utente}")
-	public Collection<Recensione> getRecensioniSeguite(@PathVariable String utente) {
-		Instant start = Instant.now();
-		logger.info("REST CALL: getRecensioniSeguite " + utente); 
-		Collection<Recensione> recensioni = recensioniSeguiteService.getRecensioniSeguite(utente); 
-		Duration duration = Duration.between(start, Instant.now()); 
-		logger.info("getRecensioniSeguite " + utente + " (trovate " + recensioni.size() + " recensioni in " + duration.toMillis() + " ms): " + recensioni);
-		return recensioni; 
-	}
+	public Collection<RecensioniSeguite> getRecensioniSeguiteByUtente(@PathVariable String utente) {
+        Instant start = Instant.now();
+        logger.info("REST CALL: getRecensioniSeguiteByUtente " + utente); 
+        Collection<RecensioniSeguite> recensioniSeguite = recensioniSeguiteService.getRecensioniSeguiteByUtente(utente); 
+        Duration duration = Duration.between(start, Instant.now()); 
+        logger.info("getRecensioniSeguiteByUtente " + utente + " (trovate " + recensioniSeguite.size() + " recensioni in " + duration.toMillis() + " ms): " + recensioniSeguite);
+        return recensioniSeguite; 
+    }
 	
 }

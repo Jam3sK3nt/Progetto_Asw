@@ -1,5 +1,6 @@
 package asw.goodbooks.connessioni.domain;
-
+import asw.goodbooks.common.api.event.DomainEvent; 
+import asw.goodbooks.connessioniservice.api.event.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +17,14 @@ public class ConnessioniService {
 	@Autowired
 	private ConnessioniConRecensoriRepository connessioniConRecensoriRepository;
 
+	@Autowired
+    private ConnessioneDomainEventPublisher domainEventPublisher;
+
  	public ConnessioneConAutore createConnessioneConAutore(String utente, String autore) {
 		ConnessioneConAutore connessione = new ConnessioneConAutore(utente, autore); 
 		connessione = connessioniConAutoriRepository.save(connessione);
+		DomainEvent event = new ConnessioneConAutoreCreatedEvent(connessione.getId(), connessione.getUtente(), connessione.getAutore());
+		domainEventPublisher.publish(event);
 		return connessione;
 	}
 
@@ -40,6 +46,8 @@ public class ConnessioniService {
  	public ConnessioneConRecensore createConnessioneConRecensore(String utente, String recensore) {
 		ConnessioneConRecensore connessione = new ConnessioneConRecensore(utente, recensore); 
 		connessione = connessioniConRecensoriRepository.save(connessione);
+		DomainEvent event = new ConnessioneConRecensoreCreatedEvent(connessione.getId(), connessione.getUtente(), connessione.getRecensore());
+		domainEventPublisher.publish(event);
 		return connessione;
 	}
 

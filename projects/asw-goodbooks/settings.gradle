@@ -2,5 +2,19 @@ include 'recensioni'
 include 'connessioni'
 include 'recensioni-seguite'
 include 'api-gateway'
+include "goodbooks-common-api-event"
+include "recensioni-service-api-event"
+include "connessioni-service-api-event"
 
 rootProject.name = 'asw-goodbooks'
+
+project(':recensioni').name = 'recensioni'
+project(':connessioni').name = 'connessioni'
+project(':recensioni-seguite').name = 'recensioni-seguite'
+project(':api-gateway').name = 'api-gateway'
+project(':goodbooks-common-api-event').name = 'goodbooks-common-api-event'
+project(':recensioni-service-api-event').name = 'recensioni-service-api-event'
+project(':connessioni-service-api-event').name = 'connessioni-service-api-event'
+
+
+

@@ -1,5 +1,7 @@
 package asw.goodbooks.recensioni.domain;
-
+import asw.goodbooks.common.api.event.DomainEvent; 
+import asw.goodbooks.recensioniservice.api.event.*; 
+import asw.goodbooks.recensioni.domain.RecensioneDomainEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +15,14 @@ public class RecensioniService {
 	@Autowired
 	private RecensioniRepository recensioniRepository;
 
+	@Autowired
+	private RecensioneDomainEventPublisher domainEventPublisher;
+
  	public Recensione createRecensione(String recensore, String titoloLibro, String autoreLibro, String testoRecensione) {
 		Recensione recensione = new Recensione(recensore, titoloLibro, autoreLibro, testoRecensione); 
 		recensione = recensioniRepository.save(recensione);
+		DomainEvent event = new RecensioneCreatedEvent(recensione.getId(), recensione.getRecensore(), recensione.getTitoloLibro(), recensione.getAutoreLibro(), recensione.getTestoRecensione());
+		domainEventPublisher.publish(event);
 		return recensione;
 	}
 
@@ -55,3 +62,4 @@ public class RecensioniService {
 	}
 
 }
+

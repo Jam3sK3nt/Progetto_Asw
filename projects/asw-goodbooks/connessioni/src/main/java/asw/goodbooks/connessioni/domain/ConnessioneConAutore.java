@@ -19,5 +19,7 @@ public class ConnessioneConAutore {
 		this.utente = utente; 
 		this.autore = autore; 
 	}
+
+	
 	
 }
